@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Client.Clients;
+using Client.Models.Requests.AuthorizationService;
 using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
@@ -22,10 +25,12 @@ namespace Client.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly ILogger<LoginModel> _logger;
+        private readonly AuthorizationClient _authorizationClient;
 
-        public LoginModel(ILogger<LoginModel> logger)
+        public LoginModel(ILogger<LoginModel> logger, AuthorizationClient client)
         {
             _logger = logger;
+            _authorizationClient = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         [BindProperty]
@@ -71,32 +76,11 @@ namespace Client.Areas.Identity.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                var client = new HttpClient();
-                var disco = await client.GetDiscoveryDocumentAsync("https://localhost:44394");
-                if (disco.IsError)
+                var response = await _authorizationClient.Login(new LoginRequest
                 {
-                    _logger.LogError(disco.Error);
-                    return Page();
-                }
-                var userLoginRequest = new PasswordTokenRequest()
-                {
-                    Address = disco.TokenEndpoint,
-                    ClientId = "client.user",
-                    ClientSecret = "secret",
-                    GrantType = OidcConstants.GrantTypes.Password,
-                    Scope = "BankingService.UserActions openid profile",
-
-                    UserName = Input.Email,
-                    Password = Input.Password,
-                };
-
-                var response = await client.RequestPasswordTokenAsync(userLoginRequest);
-
-                if (response.IsError)
-                {
-                    _logger.LogError(response.Error);
-                    return Page();
-                }
+                    Email = Input.Email,
+                    Password = Input.Password
+                });
 
                 var claims = new List<Claim>
                 {
@@ -108,7 +92,7 @@ namespace Client.Areas.Identity.Pages.Account
 
                 await HttpContext.SignInAsync(principal);
 
-                Response.Cookies.Append("jwtCookie", response.AccessToken, new CookieOptions() { HttpOnly = true });
+                Response.Cookies.Append("jwtCookie", response.AccessToken, new CookieOptions { HttpOnly = true });
 
                 return LocalRedirect("~/");
             }

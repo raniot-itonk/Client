@@ -1,15 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Client.Models
+namespace Client.Models.Requests.AuthorizationService
 {
-    public class UserSignUpRequest
+    public class RegisterRequest
     {
+
         [Required]
-        [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
         [Required]
-        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
         [Required]

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Client.Clients;
+using Client.OptionModels;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +34,10 @@ namespace Client
                 .AddDefaultUI(UIFramework.Bootstrap4);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.Configure<Services>(Configuration.GetSection(nameof(Services)));
+            services.AddTransient<AuthorizationClient>();
+            //services.Configure<Services>(Configuration.GetSection(nameof(Services)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

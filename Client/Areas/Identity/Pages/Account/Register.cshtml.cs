@@ -2,7 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Client.Clients;
 using Client.Models;
+using Client.Models.Requests;
+using Client.Models.Requests.AuthorizationService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,13 +19,16 @@ namespace Client.Areas.Identity.Pages.Account
     {
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly AuthorizationClient _authorizationClient;
 
         public RegisterModel(
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            AuthorizationClient client)
         {
             _logger = logger;
             _emailSender = emailSender;
+            _authorizationClient = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         [BindProperty]
@@ -67,7 +73,7 @@ namespace Client.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var userSignUpRequest = new UserSignUpRequest
+                var registerRequest = new RegisterRequest
                 {
                     Email = Input.Email,
                     FirstName = Input.FirstName,
@@ -75,14 +81,16 @@ namespace Client.Areas.Identity.Pages.Account
                     Password = Input.Password
                 };
 
-                var client = new HttpClient();
-                var result = await client.PostAsJsonAsync(new Uri("https://localhost:44394/api/Account/Register"), userSignUpRequest);
-
-                if (result.IsSuccessStatusCode)
+                try
                 {
-                    _logger.LogInformation("User created a new account with password.");
-                    return LocalRedirect(returnUrl);
+                    await _authorizationClient.Register(registerRequest);
                 }
+                catch (Exception e)
+                {
+                    return Page();
+                }
+
+                return LocalRedirect(returnUrl);
             }
 
             // If we got this far, something failed, redisplay form
