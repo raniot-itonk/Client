@@ -37,6 +37,7 @@ namespace Client
 
             services.Configure<Services>(Configuration.GetSection(nameof(Services)));
             services.AddTransient<AuthorizationClient>();
+            services.AddScoped<IBankClient, BankClient>();
             //services.Configure<Services>(Configuration.GetSection(nameof(Services)));
         }
 

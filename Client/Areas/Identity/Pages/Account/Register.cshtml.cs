@@ -71,30 +71,28 @@ namespace Client.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return Page();
+            var registerRequest = new RegisterRequest
             {
-                var registerRequest = new RegisterRequest
-                {
-                    Email = Input.Email,
-                    FirstName = Input.FirstName,
-                    LastName = Input.LastName,
-                    Password = Input.Password
-                };
+                Email = Input.Email,
+                FirstName = Input.FirstName,
+                LastName = Input.LastName,
+                Password = Input.Password
+            };
 
-                try
-                {
-                    await _authorizationClient.Register(registerRequest);
-                }
-                catch (Exception e)
-                {
-                    return Page();
-                }
-
-                return LocalRedirect(returnUrl);
+            try
+            {
+                await _authorizationClient.Register(registerRequest);
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "Failed to register person with email {Email} ", Input.Email);
+                return Page();
             }
 
+            return LocalRedirect(returnUrl);
+
             // If we got this far, something failed, redisplay form
-            return Page();
         }
     }
 }

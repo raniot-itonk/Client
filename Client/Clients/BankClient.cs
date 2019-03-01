@@ -11,7 +11,7 @@ using Polly.Retry;
 
 namespace Client.Clients
 {
-    public class BankClient
+    public class BankClient : IBankClient
     {
         private readonly BankService _bankService;
 
@@ -24,19 +24,22 @@ namespace Client.Clients
         public async Task CreateAccount(CreateAccountRequest request)
         {
             await ThreeRetriesAsync().ExecuteAsync(() =>
-                _bankService.BaseAddress.AppendPathSegment(_bankService.Path.Account).PostJsonAsync(request));
+                _bankService.BaseAddress.AppendPathSegment(_bankService.BankPath.Account).PostJsonAsync(request));
         }
 
-        public async Task<GetAccountResponse> GetAccount(GetAccountRequest request)
+        public async Task<GetAccountResponse> GetAccount(GetAccountRequest request, string jwtToken)
         {
             return await ThreeRetriesAsync().ExecuteAsync(() =>
-                _bankService.BaseAddress.AppendPathSegments(_bankService.Path.Account, request.Id).GetJsonAsync<GetAccountResponse>());
+                _bankService.BaseAddress.AppendPathSegments(_bankService.BankPath.Account, request.Id)
+                    .WithOAuthBearerToken(jwtToken).GetJsonAsync<GetAccountResponse>());
         }
 
-        public async Task Deposit(DepositRequest request)
+        public async Task Deposit(DepositRequest request, Guid id, string jwtToken)
         {
             await ThreeRetriesAsync().ExecuteAsync(() =>
-                _bankService.BaseAddress.AppendPathSegment(_bankService.Path.Account).PutJsonAsync(request));
+                _bankService.BaseAddress.AppendPathSegment(_bankService.BankPath.Account)
+                    .AppendPathSegment($"{id}/balance")
+                    .WithOAuthBearerToken(jwtToken).PutJsonAsync(request));
         }
 
         private static AsyncRetryPolicy ThreeRetriesAsync()
