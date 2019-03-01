@@ -1,8 +1,13 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Threading.Tasks;
 using Client.Clients;
 using Client.Models.Requests.BankService;
+using Client.Models.Responses.BankService;
+using Client.ViewModels;
+using Flurl.Http;
+using Flurl.Http.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,11 +16,13 @@ namespace Client.Controllers
     public class StockController : Controller
     {
         private readonly IBankClient _bankClient;
+        private readonly IPublicShareOwnerControlClient _publicShareOwnerControlClient;
         private readonly ILogger<StockController> _logger;
 
-        public StockController(IBankClient bankClient, ILogger<StockController> logger)
+        public StockController(IBankClient bankClient, IPublicShareOwnerControlClient publicShareOwnerControlClient , ILogger<StockController> logger)
         {
             _bankClient = bankClient;
+            _publicShareOwnerControlClient = publicShareOwnerControlClient;
             _logger = logger;
         }
 
@@ -27,7 +34,7 @@ namespace Client.Controllers
                 var getAccountRequest = new GetAccountRequest { Id = id };
                 var account = await _bankClient.GetAccount(getAccountRequest, jwtToken);
 
-                return View("Index",account);
+                return View("Index", account);
             }
             catch (Exception e)
             {
@@ -36,7 +43,48 @@ namespace Client.Controllers
             }
         }
 
-        private (string,Guid) GetJwtAndIdFromJwt()
+        public async Task<ViewResult> AddBalance()
+        {
+            var (jwtToken, id) = GetJwtAndIdFromJwt();
+            var depositRequest = new DepositRequest{Amount = 1000};
+            await _bankClient.Deposit(depositRequest, id, jwtToken);
+            return await Index();
+        }
+
+        public async Task<ViewResult> StockList()
+        {
+            try
+            {
+                var allStocks = await _publicShareOwnerControlClient.GetAllStocks();
+                return View(allStocks);
+            }
+            catch (FlurlHttpException e)
+            {
+                if (e.Call.HttpStatus == HttpStatusCode.NotFound)
+                    return View(null);
+                _logger.LogError(e, "Failed to get all stocks");
+                throw;
+            }
+        }
+
+        public async Task<ViewResult> OwnedStockList()
+        {
+            try
+            {
+                var (jwtToken, id) = GetJwtAndIdFromJwt();
+                var allOwnedStocks = await _publicShareOwnerControlClient.GetAllOwnedStocks(id, jwtToken);
+                return View(allOwnedStocks);
+            }
+            catch (FlurlHttpException e)
+            {
+                if (e.Call.HttpStatus == HttpStatusCode.NotFound)
+                    return View(null);
+                _logger.LogError(e, "Failed to get Owned Stocks");
+                throw;
+            }
+        }
+
+        private (string, Guid) GetJwtAndIdFromJwt()
         {
             Request.Cookies.TryGetValue("jwtCookie", out var jwtToken);
             var id = GetIdFromToken(jwtToken);
@@ -57,14 +105,6 @@ namespace Client.Controllers
                 Console.WriteLine(e);
                 throw;
             }
-        }
-
-        public async Task<ViewResult> AddBalance()
-        {
-            var (jwtToken, id) = GetJwtAndIdFromJwt();
-            var depositRequest = new DepositRequest{Amount = 1000};
-            await _bankClient.Deposit(depositRequest, id, jwtToken);
-            return await Index();
         }
     }
 }
