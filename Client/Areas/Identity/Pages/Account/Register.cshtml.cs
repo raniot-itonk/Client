@@ -6,7 +6,9 @@ using Client.Clients;
 using Client.Models;
 using Client.Models.Requests;
 using Client.Models.Requests.AuthorizationService;
+using Client.Models.Requests.BankService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -20,15 +22,14 @@ namespace Client.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly AuthorizationClient _authorizationClient;
+        private readonly IBankClient _bankClient;
 
-        public RegisterModel(
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
-            AuthorizationClient client)
+        public RegisterModel(ILogger<RegisterModel> logger, IEmailSender emailSender, AuthorizationClient client, IBankClient bankClient)
         {
             _logger = logger;
             _emailSender = emailSender;
             _authorizationClient = client ?? throw new ArgumentNullException(nameof(client));
+            _bankClient = bankClient;
         }
 
         [BindProperty]
@@ -82,7 +83,13 @@ namespace Client.Areas.Identity.Pages.Account
 
             try
             {
-                await _authorizationClient.Register(registerRequest);
+                var response = await _authorizationClient.Register(registerRequest);
+                Response.Cookies.Append("jwtCookie", response.AccessToken, new CookieOptions { HttpOnly = true });
+                await _bankClient.CreateAccount(new CreateAccountRequest
+                    {
+                        Balance = 0,
+                        OwnerName = $"{Input.FirstName} {Input.LastName}"
+                    });
             }
             catch (Exception e)
             {

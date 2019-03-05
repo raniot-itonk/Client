@@ -13,18 +13,21 @@ namespace Client.Clients
 {
     public class AuthorizationClient
     {
+        private readonly IBankClient _bankClient;
         private readonly AuthorizationService _authorizationService;
 
-        public AuthorizationClient(IOptionsMonitor<Services> serviceOptions)
+        public AuthorizationClient(IOptionsMonitor<Services> serviceOptions, IBankClient bankClient)
         {
+            _bankClient = bankClient;
             _authorizationService = serviceOptions.CurrentValue.AuthorizationService ??
                                     throw new ArgumentNullException(nameof(serviceOptions.CurrentValue
                                         .AuthorizationService));
         }
 
-        public async Task Register(RegisterRequest request)
+        public async Task<TokenResponse> Register(RegisterRequest request)
         {
             await _authorizationService.BaseAddress.AppendPathSegment(_authorizationService.AuthPath.Register).PostJsonAsync(request);
+            return await Login(new LoginRequest {Email = request.Email, Password = request.Password});
         }
 
         public async Task<TokenResponse> Login(LoginRequest request)
