@@ -4,10 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Client.Clients;
 using Client.Models.Requests.BankService;
-using Client.Models.Responses.BankService;
-using Client.ViewModels;
 using Flurl.Http;
-using Flurl.Http.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
