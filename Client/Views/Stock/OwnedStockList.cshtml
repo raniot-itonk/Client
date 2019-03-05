@@ -6,7 +6,7 @@
 
 <h1>OwnedStockList</h1>
 
-@if (Model == null)
+@if (!Model.Any())
 {
     <p>You do not own any stocks</p>
 }

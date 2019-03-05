@@ -20,10 +20,11 @@ namespace Client.Clients
                            throw new ArgumentNullException(nameof(serviceOption.CurrentValue.BankService));
         }
 
-        public async Task CreateAccount(CreateAccountRequest request)
+        public async Task CreateAccount(CreateAccountRequest request, string jwtToken)
         {
             await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
-                _bankService.BaseAddress.AppendPathSegment(_bankService.BankPath.Account).PostJsonAsync(request));
+                _bankService.BaseAddress.AppendPathSegment(_bankService.BankPath.Account)
+                    .WithOAuthBearerToken(jwtToken).PostJsonAsync(request));
         }
 
         public async Task<GetAccountResponse> GetAccount(GetAccountRequest request, string jwtToken)

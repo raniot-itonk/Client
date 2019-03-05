@@ -7,7 +7,7 @@ namespace Client.Clients
 {
     public interface IBankClient
     {
-        Task CreateAccount(CreateAccountRequest request);
+        Task CreateAccount(CreateAccountRequest request, string jwtToken);
         Task Deposit(DepositRequest request, Guid id, string jwtToken);
         Task<GetAccountResponse> GetAccount(GetAccountRequest request, string jwtToken);
     }

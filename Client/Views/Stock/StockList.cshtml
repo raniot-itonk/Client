@@ -5,7 +5,7 @@
 }
 
 <h1>StockList</h1>
-@if (Model == null)
+@if (!Model.Any())
 {
     <p>No Stocks could be found</p>
 }

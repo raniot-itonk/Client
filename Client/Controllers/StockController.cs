@@ -1,8 +1,8 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Threading.Tasks;
 using Client.Clients;
+using Client.Helpers;
 using Client.Models.Requests.BankService;
 using Flurl.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -80,28 +80,11 @@ namespace Client.Controllers
                 throw;
             }
         }
-
         private (string, Guid) GetJwtAndIdFromJwt()
         {
             Request.Cookies.TryGetValue("jwtCookie", out var jwtToken);
-            var id = GetIdFromToken(jwtToken);
+            var id = JwtHelper.GetIdFromToken(jwtToken);
             return (jwtToken, id);
-        }
-
-        private Guid GetIdFromToken(string jwtToken)
-        {
-            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            try
-            {
-                var jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(jwtToken);
-                var idFromJwt = Guid.Parse(jwtSecurityToken.Subject);
-                return idFromJwt;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
         }
     }
 }

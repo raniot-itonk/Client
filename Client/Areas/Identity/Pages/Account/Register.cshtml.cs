@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Client.Clients;
+using Client.Helpers;
 using Client.Models;
 using Client.Models.Requests;
 using Client.Models.Requests.AuthorizationService;
@@ -88,8 +89,10 @@ namespace Client.Areas.Identity.Pages.Account
                 await _bankClient.CreateAccount(new CreateAccountRequest
                     {
                         Balance = 0,
-                        OwnerName = $"{Input.FirstName} {Input.LastName}"
-                    });
+                        OwnerName = $"{Input.FirstName} {Input.LastName}",
+                        OwnerId =  JwtHelper.GetIdFromToken(response.AccessToken)
+                    }, 
+                    response.AccessToken);
             }
             catch (Exception e)
             {
