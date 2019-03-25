@@ -28,7 +28,7 @@ namespace Client.Controllers
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
             var stocksWithOwnerInfo = await _publicShareOwnerControlClient.GetStockWithOwnerInfo(id, jwtToken);
-            return View(stocksWithOwnerInfo);
+            return View("List", stocksWithOwnerInfo);
         }
 
 
@@ -48,14 +48,14 @@ namespace Client.Controllers
                     new Shareholder
                     {
                         Amount = stockViewModel.AmountOfShares,
-                        Id = id
+                        StockholderId = id
                     }
                 },
                 StockOwner = id
             };
 
             await _publicShareOwnerControlClient.PostStock(stockRequest, "jwtToken");
-            return View("Details");
+            return await List();
         }
 
         public IActionResult IssueMore(long id)
@@ -64,13 +64,17 @@ namespace Client.Controllers
         }
 
         [HttpPost]
-        public IActionResult IssueMore([Bind("Id,Amount")] IssueMoreViewModel issueMoreViewModel)
+        public async Task<IActionResult> IssueMore([Bind("Id,Amount")] IssueMoreViewModel issueMoreViewModel)
         {
-            
+            var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
+            await _publicShareOwnerControlClient.IssueShares(new IssueSharesRequest
+                {
+                    Amount = issueMoreViewModel.Amount,
+                    Owner = id
+                },
+                issueMoreViewModel.Id, jwtToken);
 
-            //_publicShareOwnerControlClient.
-
-            return View();
+            return await List();
         }
     }
 }

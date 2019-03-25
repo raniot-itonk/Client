@@ -48,5 +48,12 @@ namespace Client.Clients
                 _publicShareOwnerControl.BaseAddress.AppendPathSegment(_publicShareOwnerControl.PublicSharePath.Stock)
                     .PostJsonAsync(stockRequest));
         }
+
+        public async Task IssueShares(IssueSharesRequest issueSharesRequest, long id, string jwtToken)
+        {
+            await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
+                _publicShareOwnerControl.BaseAddress.AppendPathSegments(_publicShareOwnerControl.PublicSharePath.Stock, id, "Issue")
+                    .PutJsonAsync(issueSharesRequest));
+        }
     }
 }
