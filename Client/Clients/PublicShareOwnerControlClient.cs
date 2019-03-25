@@ -42,11 +42,11 @@ namespace Client.Clients
                     .WithOAuthBearerToken(jwtToken).SetQueryParam("ownerId", id).GetJsonAsync<List<StockWithOwnerInfoResponse>>());
         }
 
-        public async Task PostStock(StockRequest stockRequest, string jwtToken)
+        public async Task<StockResponse> PostStock(StockRequest stockRequest, string jwtToken)
         {
-            await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
+            return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
                 _publicShareOwnerControl.BaseAddress.AppendPathSegment(_publicShareOwnerControl.PublicSharePath.Stock)
-                    .PostJsonAsync(stockRequest));
+                    .PostJsonAsync(stockRequest).ReceiveJson<StockResponse>());
         }
 
         public async Task IssueShares(IssueSharesRequest issueSharesRequest, long id, string jwtToken)

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Client.Clients;
 using Client.Helpers;
 using Client.Models;
 using Client.Models.Requests.PublicShareOwnerControl;
+using Client.Models.Requests.StockShareProvider;
 using Client.Models.Responses.PublicShareOwnerControl;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,12 +15,14 @@ namespace Client.Controllers
     {
         private readonly IBankClient _bankClient;
         private readonly IPublicShareOwnerControlClient _publicShareOwnerControlClient;
+        private readonly IStockShareProviderClient _stockShareProviderClient;
         private readonly ILogger<StockController> _logger;
 
-        public BusinessController(IBankClient bankClient, IPublicShareOwnerControlClient publicShareOwnerControlClient, ILogger<StockController> logger)
+        public BusinessController(IBankClient bankClient, IPublicShareOwnerControlClient publicShareOwnerControlClient, IStockShareProviderClient stockShareProviderClient , ILogger<StockController> logger)
         {
             _bankClient = bankClient;
             _publicShareOwnerControlClient = publicShareOwnerControlClient;
+            _stockShareProviderClient = stockShareProviderClient;
             _logger = logger;
         }
 
@@ -54,7 +56,17 @@ namespace Client.Controllers
                 StockOwner = id
             };
 
-            await _publicShareOwnerControlClient.PostStock(stockRequest, "jwtToken");
+            var stockResponse = await _publicShareOwnerControlClient.PostStock(stockRequest, jwtToken);
+            var sellRequestRequest = new SellRequestRequest
+            {
+                AmountOfShares = stockViewModel.AmountOfShares,
+                AccountId = id,
+                Price = stockViewModel.Price,
+                StockId = stockResponse.Id,
+                TimeOut = stockViewModel.TimeOut
+
+            };
+            await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
             return await List();
         }
 

@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Client.Models
 {
-    public class StockViewModel
+    public class CreateStockViewModel
     {
         public string Name { get; set; }
+        public DateTime TimeOut { get; set; }
         public int AmountOfShares { get; set; }
+        public double Price { get; set; }
     }
 }

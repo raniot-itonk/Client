@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Client.Clients;
 using Client.Helpers;
+using Client.Models;
 using Client.Models.Requests.BankService;
 using Flurl.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -81,6 +82,18 @@ namespace Client.Controllers
                 _logger.LogError(e, "Failed to get Owned Stocks");
                 throw;
             }
+        }
+
+        public IActionResult Buy(long id)
+        {
+            var buyStockViewModel = new BuyStockViewModel
+            {
+                Id = id,
+                AmountOfShares = 0,
+                TimeOut = DateTime.Today.AddDays(1),
+                Price = 0
+            };
+            return View(buyStockViewModel);
         }
     }
 }

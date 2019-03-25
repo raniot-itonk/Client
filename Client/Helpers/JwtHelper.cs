@@ -10,7 +10,7 @@ namespace Client.Helpers
         {
             request.Cookies.TryGetValue("jwtCookie", out var jwtToken);
             Console.WriteLine("My JwtToken : " + jwtToken);
-            var id = JwtHelper.GetIdFromToken(jwtToken);
+            var id = GetIdFromToken(jwtToken);
             return (jwtToken, id);
         }
 
