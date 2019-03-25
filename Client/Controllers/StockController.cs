@@ -27,7 +27,9 @@ namespace Client.Controllers
         {
             try
             {
-                var (jwtToken, id) = GetJwtAndIdFromJwt();
+
+                var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
+
                 var getAccountRequest = new GetAccountRequest { Id = id };
                 var account = await _bankClient.GetAccount(getAccountRequest, jwtToken);
 
@@ -42,7 +44,7 @@ namespace Client.Controllers
 
         public async Task<ViewResult> AddBalance()
         {
-            var (jwtToken, id) = GetJwtAndIdFromJwt();
+            var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
             var depositRequest = new DepositRequest{Amount = 1000};
             await _bankClient.Deposit(depositRequest, id, jwtToken);
             return await Index();
@@ -68,7 +70,7 @@ namespace Client.Controllers
         {
             try
             {
-                var (jwtToken, id) = GetJwtAndIdFromJwt();
+                var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
                 var allOwnedStocks = await _publicShareOwnerControlClient.GetAllOwnedStocks(id, jwtToken);
                 return View(allOwnedStocks);
             }
@@ -79,12 +81,6 @@ namespace Client.Controllers
                 _logger.LogError(e, "Failed to get Owned Stocks");
                 throw;
             }
-        }
-        private (string, Guid) GetJwtAndIdFromJwt()
-        {
-            Request.Cookies.TryGetValue("jwtCookie", out var jwtToken);
-            var id = JwtHelper.GetIdFromToken(jwtToken);
-            return (jwtToken, id);
         }
     }
 }

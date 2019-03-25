@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Client.Helpers;
-using Client.Models.Requests.BankService;
-using Client.Models.Responses.BankService;
+using Client.Models.Requests.PublicShareOwnerControl;
 using Client.Models.Responses.PublicShareOwnerControl;
 using Client.OptionModels;
 using Flurl;
@@ -34,6 +33,20 @@ namespace Client.Clients
             return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
                 _publicShareOwnerControl.BaseAddress.AppendPathSegment(_publicShareOwnerControl.PublicSharePath.Stock)
                     .WithOAuthBearerToken(jwtToken).SetQueryParam("userIdGuid", id).GetJsonAsync<List<StockResponse>>());
+        }
+
+        public async Task<List<StockWithOwnerInfoResponse>> GetStockWithOwnerInfo(Guid id, string jwtToken)
+        {
+            return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
+                _publicShareOwnerControl.BaseAddress.AppendPathSegment(_publicShareOwnerControl.PublicSharePath.Stock)
+                    .WithOAuthBearerToken(jwtToken).SetQueryParam("ownerId", id).GetJsonAsync<List<StockWithOwnerInfoResponse>>());
+        }
+
+        public async Task PostStock(StockRequest stockRequest, string jwtToken)
+        {
+            await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
+                _publicShareOwnerControl.BaseAddress.AppendPathSegment(_publicShareOwnerControl.PublicSharePath.Stock)
+                    .PostJsonAsync(stockRequest));
         }
     }
 }
