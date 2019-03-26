@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Client.Clients;
 using Client.Helpers;
@@ -36,21 +37,27 @@ namespace Client.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var createStockViewModel = new CreateStockViewModel
+            {
+                AmountOfShares = 1,
+                TimeOut = DateTime.Today.AddDays(1),
+                Price = 1
+            };
+            return View(createStockViewModel);
         }
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Name,AmountOfShares")] StockViewModel stockViewModel)
+        public async Task<IActionResult> Create([Bind("Name,Price,TimeOut,AmountOfShares")] CreateStockViewModel createStockViewModel)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
             var stockRequest = new StockRequest
             {
-                Name = stockViewModel.Name,
+                Name = createStockViewModel.Name,
                 Shares = new List<Shareholder>
                 {
                     new Shareholder
                     {
-                        Amount = stockViewModel.AmountOfShares,
-                        StockholderId = id
+                        Amount = createStockViewModel.AmountOfShares,
+                        ShareholderId = id
                     }
                 },
                 StockOwner = id
@@ -59,11 +66,11 @@ namespace Client.Controllers
             var stockResponse = await _publicShareOwnerControlClient.PostStock(stockRequest, jwtToken);
             var sellRequestRequest = new SellRequestRequest
             {
-                AmountOfShares = stockViewModel.AmountOfShares,
+                AmountOfShares = createStockViewModel.AmountOfShares,
                 AccountId = id,
-                Price = stockViewModel.Price,
+                Price = createStockViewModel.Price,
                 StockId = stockResponse.Id,
-                TimeOut = stockViewModel.TimeOut
+                TimeOut = createStockViewModel.TimeOut
 
             };
             await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
@@ -72,11 +79,19 @@ namespace Client.Controllers
 
         public IActionResult IssueMore(long id)
         {
-            return View(new IssueMoreViewModel { Id = id, Amount = 0 });
+            var issueMoreViewModel = new IssueMoreViewModel
+            {
+                Id = id,
+                Amount = 1,
+                TimeOut = DateTime.Today.AddDays(1),
+                Price = 1
+
+            };
+            return View(issueMoreViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> IssueMore([Bind("Id,Amount")] IssueMoreViewModel issueMoreViewModel)
+        public async Task<IActionResult> IssueMore([Bind("Id,Price,Amount")] IssueMoreViewModel issueMoreViewModel)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
             await _publicShareOwnerControlClient.IssueShares(new IssueSharesRequest
@@ -85,6 +100,17 @@ namespace Client.Controllers
                     Owner = id
                 },
                 issueMoreViewModel.Id, jwtToken);
+
+            var sellRequestRequest = new SellRequestRequest
+            {
+                AmountOfShares = issueMoreViewModel.Amount,
+                AccountId = id,
+                Price = issueMoreViewModel.Price,
+                StockId = issueMoreViewModel.Id,
+                TimeOut = issueMoreViewModel.TimeOut
+
+            };
+            await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
 
             return await List();
         }

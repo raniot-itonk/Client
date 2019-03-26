@@ -1,12 +1,13 @@
 ﻿using System;
 
-namespace Client.Clients
+namespace Client.Models.Requests.StockShareProvider
 {
-    public class PlaceBidRequest
+    public class SellRequestRequest
     {
+        public Guid AccountId { get; set; }
         public long StockId { get; set; }
-        public int AmountOfShares { get; set; }
         public double Price { get; set; }
         public DateTime TimeOut { get; set; }
+        public int AmountOfShares { get; set; }
     }
 }

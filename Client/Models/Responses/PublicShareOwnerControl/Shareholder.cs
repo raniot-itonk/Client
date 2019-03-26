@@ -4,7 +4,7 @@ namespace Client.Models.Responses.PublicShareOwnerControl
 {
     public class Shareholder
     {
-        public Guid StockholderId { get; set; }
+        public Guid ShareholderId { get; set; }
         public int Amount { get; set; }
     }
 }

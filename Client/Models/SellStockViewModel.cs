@@ -2,11 +2,11 @@
 
 namespace Client.Models
 {
-    public class IssueMoreViewModel
+    public class SellStockViewModel
     {
         public long Id { get; set; }
-        public int Amount { get; set; }
-        public double Price { get; set; }
         public DateTime TimeOut { get; set; }
+        public int AmountOfShares { get; set; }
+        public double Price { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Client.Clients
+namespace Client.Models.Requests.StockShareRequester
 {
     public class PlaceBidRequest
     {
