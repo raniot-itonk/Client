@@ -23,7 +23,7 @@ namespace Client.Clients
         {
             await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
                 _stockShareRequester.BaseAddress.AppendPathSegment(_stockShareRequester.StockShareRequesterPath.StockBid)
-                    .PostJsonAsync(placeBidRequest));
+                    .WithOAuthBearerToken(jwtToken).PostJsonAsync(placeBidRequest));
         }
     }
 }

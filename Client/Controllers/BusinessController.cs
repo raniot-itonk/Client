@@ -91,7 +91,7 @@ namespace Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> IssueMore([Bind("Id,Price,Amount")] IssueMoreViewModel issueMoreViewModel)
+        public async Task<IActionResult> IssueMore([Bind("Id,Price,TimeOut,Amount")] IssueMoreViewModel issueMoreViewModel)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
             await _publicShareOwnerControlClient.IssueShares(new IssueSharesRequest
