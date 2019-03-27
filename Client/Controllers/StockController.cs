@@ -114,7 +114,7 @@ namespace Client.Controllers
                 Price = createStockViewModel.Price,
                 StockId = createStockViewModel.Id
             };
-            var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
+            var (jwtToken, _) = JwtHelper.GetJwtAndIdFromJwt(Request);
             await _stockShareRequesterClient.PlaceBid(placeBidRequest, jwtToken);
             return await Index();
         }

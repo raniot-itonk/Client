@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Client.Models;
 
@@ -13,6 +14,7 @@ namespace Client.Controllers
 
         public IActionResult Privacy()
         {
+            throw new Exception("This is a dummy Exception to test exception handling!");
             return View();
         }
 
