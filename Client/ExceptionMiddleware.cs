@@ -26,7 +26,11 @@ namespace Client
             }
             catch (FlurlHttpException ex)
             {
-                logger.LogError(ex, "Failed Http Call {Response}", await ex.Call.Response.Content.ReadAsStringAsync());
+                
+                logger.LogError(ex,
+                    "Failed Http Call {Response} and {Reason}",
+                    await ex.Call.Response?.Content.ReadAsStringAsync(),
+                    ex.Call.Response?.ReasonPhrase);
                 await HandleExceptionAsync(httpContext, ex);
             }
             catch (Exception ex)
