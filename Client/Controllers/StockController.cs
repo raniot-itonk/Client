@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Client.Clients;
@@ -7,6 +9,7 @@ using Client.Models;
 using Client.Models.Requests.BankService;
 using Client.Models.Requests.StockShareProvider;
 using Client.Models.Requests.StockShareRequester;
+using Client.Models.Responses.PublicShareOwnerControl;
 using Flurl.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -81,7 +84,8 @@ namespace Client.Controllers
             {
                 var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
                 var allOwnedStocks = await _publicShareOwnerControlClient.GetAllOwnedStocks(id, jwtToken);
-                return View(allOwnedStocks);
+                var ownedStockViewModels = OwnedStockViewModel.FromStockResponseList(allOwnedStocks);
+                return View(ownedStockViewModels);
             }
             catch (FlurlHttpException e)
             {
@@ -145,6 +149,31 @@ namespace Client.Controllers
             };
             await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
             return await Index();
+        }
+    }
+
+    public class OwnedStockViewModel
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public double LastTradedValue { get; set; }
+        public int Amount { get; set; }
+
+
+
+        public static List<OwnedStockViewModel> FromStockResponseList(List<StockResponse> stockResponses)
+        {
+            var ownedStockViewModels = new List<OwnedStockViewModel>();
+            foreach (var stockResponse in stockResponses)
+            {
+                ownedStockViewModels.Add(new OwnedStockViewModel
+                {
+                    Amount = stockResponse.ShareHolders.First().Amount,
+                    Id = stockResponse.Id,
+                    LastTradedValue = stockResponse.LastTradedValue,
+                    Name = stockResponse.Name
+                });
+            }
         }
     }
 }

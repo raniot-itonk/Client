@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Client.Models.Responses.PublicShareOwnerControl.StockResponse>
+﻿@model IEnumerable<Client.Controllers.OwnedStockViewModel>
 
 @{
     ViewData["Title"] = "OwnedStockList";
@@ -21,6 +21,9 @@ else
             <th>
                 @Html.DisplayNameFor(model => model.LastTradedValue)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
             <th></th>
         </tr>
         </thead>
@@ -32,6 +35,9 @@ else
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.LastTradedValue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
                 </td>
                 <td>
                     @Html.ActionLink("Sell", "Sell", new { id = item.Id })

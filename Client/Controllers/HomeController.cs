@@ -14,7 +14,7 @@ namespace Client.Controllers
 
         public IActionResult Privacy()
         {
-            throw new Exception("This is a dummy Exception to test exception handling!");
+            throw new Exception("This is a dummy Exception to FromStockResponseList exception handling!");
             return View();
         }
 
