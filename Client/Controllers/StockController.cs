@@ -174,6 +174,8 @@ namespace Client.Controllers
                     Name = stockResponse.Name
                 });
             }
+
+            return ownedStockViewModels;
         }
     }
 }
