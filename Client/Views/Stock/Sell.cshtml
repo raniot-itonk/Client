@@ -5,19 +5,22 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@{
-    if (ViewBag.ShowErrorDialog != null && ViewBag.ShowErrorDialog == true)
-    {
-        <script>
-            alert(ViewBag.ErrorText);
-        </script>
-    }
-}
+
 
 <h1>Sell</h1>
 
 <h4>SellStockViewModel</h4>
 <hr />
+
+@{
+    if (ViewBag.ShowErrorDialog != null && ViewBag.ShowErrorDialog == true)
+    {
+    <div class="alert alert-danger">
+        @ViewBag.ErrorText
+    </div>
+    }
+}
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Sell">
