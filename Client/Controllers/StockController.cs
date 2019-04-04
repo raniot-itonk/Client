@@ -84,7 +84,7 @@ namespace Client.Controllers
             {
                 var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
                 var allOwnedStocks = await _publicShareOwnerControlClient.GetAllOwnedStocks(id, jwtToken);
-                var ownedStockViewModels = OwnedStockViewModel.FromStockResponseList(allOwnedStocks);
+                var ownedStockViewModels = OwnedStockViewModel.FromStockResponseList(allOwnedStocks, id);
                 return View(ownedStockViewModels);
             }
             catch (FlurlHttpException e)
@@ -161,14 +161,14 @@ namespace Client.Controllers
 
 
 
-        public static List<OwnedStockViewModel> FromStockResponseList(List<StockResponse> stockResponses)
+        public static List<OwnedStockViewModel> FromStockResponseList(List<StockResponse> stockResponses, Guid id)
         {
             var ownedStockViewModels = new List<OwnedStockViewModel>();
             foreach (var stockResponse in stockResponses)
             {
                 ownedStockViewModels.Add(new OwnedStockViewModel
                 {
-                    Amount = stockResponse.ShareHolders.First().Amount,
+                    Amount = stockResponse.ShareHolders.Where(shareholder => shareholder.ShareholderId == id).Sum(shareholder => shareholder.Amount),
                     Id = stockResponse.Id,
                     LastTradedValue = stockResponse.LastTradedValue,
                     Name = stockResponse.Name
