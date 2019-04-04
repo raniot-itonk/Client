@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Client.Helpers;
+using Client.Models;
 using Client.Models.Requests.StockShareProvider;
 using Client.OptionModels;
 using Flurl;
@@ -19,11 +20,11 @@ namespace Client.Clients
                                        throw new ArgumentNullException(nameof(serviceOption.CurrentValue.StockShareProvider));
         }
 
-        public async Task SetSharesForSale(SellRequestRequest sellRequestRequest, string jwtToken)
+        public async Task<ValidationResult> SetSharesForSale(SellRequestRequest sellRequestRequest, string jwtToken)
         {
-            await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
+            return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
                 _stockShareRequester.BaseAddress.AppendPathSegment(_stockShareRequester.StockShareProviderPath.StockSell)
-                    .PostJsonAsync(sellRequestRequest));
+                    .PostJsonAsync(sellRequestRequest).ReceiveJson<ValidationResult>());
         }
     }
 }

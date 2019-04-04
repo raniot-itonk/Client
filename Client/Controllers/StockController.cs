@@ -147,8 +147,13 @@ namespace Client.Controllers
                 Price = sellStockViewModel.Price,
                 StockId = sellStockViewModel.Id
             };
-            await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
-            return await Index();
+            var validationResult = await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
+
+            if(validationResult.Valid)
+                return await Index();
+            ViewBag.ShowErrorDialog = true;
+            ViewBag.ErrorText = validationResult.ErrorMessage;
+            return View(sellStockViewModel);
         }
     }
 
