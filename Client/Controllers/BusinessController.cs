@@ -73,8 +73,13 @@ namespace Client.Controllers
                 TimeOut = createStockViewModel.TimeOut
 
             };
-            await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
-            return await List();
+            var validationResult = await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
+
+            if (validationResult.Valid) return await List();
+
+            ViewBag.ShowErrorDialog = true;
+            ViewBag.ErrorText = validationResult.ErrorMessage;
+            return View(createStockViewModel);
         }
 
         public IActionResult IssueMore(long id)
@@ -110,9 +115,12 @@ namespace Client.Controllers
                 TimeOut = issueMoreViewModel.TimeOut
 
             };
-            await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
+            var validationResult = await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
+            if (validationResult.Valid) return await List();
 
-            return await List();
+            ViewBag.ShowErrorDialog = true;
+            ViewBag.ErrorText = validationResult.ErrorMessage;
+            return View(issueMoreViewModel);
         }
     }
 }

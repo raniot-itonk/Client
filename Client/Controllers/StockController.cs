@@ -149,8 +149,7 @@ namespace Client.Controllers
             };
             var validationResult = await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
 
-            if(validationResult.Valid)
-                return await Index();
+            if(validationResult.Valid) return await Index();
             ViewBag.ShowErrorDialog = true;
             ViewBag.ErrorText = validationResult.ErrorMessage;
             return View(sellStockViewModel);
