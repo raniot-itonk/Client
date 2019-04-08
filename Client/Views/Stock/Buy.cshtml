@@ -9,6 +9,16 @@
 
 <h4>BuyStockViewModel</h4>
 <hr />
+
+@{
+    if (ViewBag.ShowErrorDialog != null && ViewBag.ShowErrorDialog == true)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.ErrorText
+        </div>
+    }
+}
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Buy">

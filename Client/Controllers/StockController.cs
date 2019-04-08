@@ -119,8 +119,11 @@ namespace Client.Controllers
                 StockId = createStockViewModel.Id
             };
             var (jwtToken, _) = JwtHelper.GetJwtAndIdFromJwt(Request);
-            await _stockShareRequesterClient.PlaceBid(placeBidRequest, jwtToken);
-            return await Index();
+            var validationResult = await _stockShareRequesterClient.PlaceBid(placeBidRequest, jwtToken);
+            if (validationResult.Valid) return await Index();
+            ViewBag.ShowErrorDialog = true;
+            ViewBag.ErrorText = validationResult.ErrorMessage;
+            return View(createStockViewModel);
         }
 
         public IActionResult Sell(long id)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Client.Helpers;
+using Client.Models;
 using Client.Models.Requests.StockShareRequester;
 using Client.OptionModels;
 using Flurl;
@@ -19,11 +20,11 @@ namespace Client.Clients
                                        throw new ArgumentNullException(nameof(serviceOption.CurrentValue.StockShareRequester));
         }
 
-        public async Task PlaceBid(PlaceBidRequest placeBidRequest, string jwtToken)
+        public async Task<ValidationResult> PlaceBid(PlaceBidRequest placeBidRequest, string jwtToken)
         {
-            await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
+            return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
                 _stockShareRequester.BaseAddress.AppendPathSegment(_stockShareRequester.StockShareRequesterPath.StockBid)
-                    .WithOAuthBearerToken(jwtToken).PostJsonAsync(placeBidRequest));
+                    .WithOAuthBearerToken(jwtToken).PostJsonAsync(placeBidRequest).ReceiveJson<ValidationResult>());
         }
     }
 }
