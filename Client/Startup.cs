@@ -1,6 +1,7 @@
 ﻿using Client.Clients;
 using Client.OptionModels;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Client
 {
@@ -41,7 +43,8 @@ namespace Client
             services.AddScoped<IStockShareRequesterClient, StockShareRequesterClient>();
             services.AddScoped<IStockShareProviderClient, StockShareProviderClient>();
             services.AddScoped<IPublicShareOwnerControlClient, PublicShareOwnerControlClient>();
-            //services.Configure<Services>(Configuration.GetSection(nameof(Services)));
+
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +63,8 @@ namespace Client
                 app.ExceptionMiddleware();
             }
 
+            SetupReadyAndLiveHealthChecks(app);
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -69,6 +74,20 @@ namespace Client
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+
+        private static void SetupReadyAndLiveHealthChecks(IApplicationBuilder app)
+        {
+            app.UseHealthChecks("/health/ready", new HealthCheckOptions()
+            {
+                // Exclude all checks and return a 200-Ok.
+                Predicate = (_) => false
+            });
+            app.UseHealthChecks("/health/live", new HealthCheckOptions()
+            {
+                // Exclude all checks and return a 200-Ok.
+                Predicate = (_) => false
             });
         }
     }
