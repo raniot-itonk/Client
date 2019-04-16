@@ -26,5 +26,12 @@ namespace Client.Clients
                 _stockShareRequester.BaseAddress.AppendPathSegment(_stockShareRequester.StockShareRequesterPath.StockBid)
                     .WithOAuthBearerToken(jwtToken).PostJsonAsync(placeBidRequest).ReceiveJson<ValidationResult>());
         }
+
+        public async Task<ValidationResult> RemoveBid(long id, string jwtToken)
+        {
+            return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
+                _stockShareRequester.BaseAddress.AppendPathSegments(_stockShareRequester.StockShareRequesterPath.StockBid, id)
+                    .DeleteAsync().ReceiveJson<ValidationResult>());
+        }
     }
 }

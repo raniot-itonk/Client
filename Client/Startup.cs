@@ -43,6 +43,7 @@ namespace Client
             services.AddScoped<IStockShareRequesterClient, StockShareRequesterClient>();
             services.AddScoped<IStockShareProviderClient, StockShareProviderClient>();
             services.AddScoped<IPublicShareOwnerControlClient, PublicShareOwnerControlClient>();
+            services.AddScoped<IStockTraderBrokerClient, StockTraderBrokerClient>();
 
             services.AddHealthChecks();
         }

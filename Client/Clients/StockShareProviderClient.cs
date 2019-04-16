@@ -26,5 +26,12 @@ namespace Client.Clients
                 _stockShareRequester.BaseAddress.AppendPathSegment(_stockShareRequester.StockShareProviderPath.StockSell)
                     .PostJsonAsync(sellRequestRequest).ReceiveJson<ValidationResult>());
         }
+
+        public async Task<ValidationResult> RemoveSharesForSale(long id, string jwtToken)
+        {
+            return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
+                _stockShareRequester.BaseAddress.AppendPathSegments(_stockShareRequester.StockShareProviderPath.StockSell, id)
+                    .DeleteAsync().ReceiveJson<ValidationResult>());
+        }
     }
 }
