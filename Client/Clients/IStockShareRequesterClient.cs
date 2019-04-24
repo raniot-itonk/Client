@@ -7,5 +7,6 @@ namespace Client.Clients
     public interface IStockShareRequesterClient
     {
         Task<ValidationResult> PlaceBid(PlaceBidRequest placeBidRequest, string jwtToken);
+        Task<ValidationResult> RemoveBid(long id, string jwtToken);
     }
 }

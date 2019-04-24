@@ -1,6 +1,4 @@
-﻿using StockShareRequester.OptionModels;
-
-namespace Client.OptionModels
+﻿namespace Client.OptionModels
 {
     public class Services
     {

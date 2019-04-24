@@ -1,4 +1,4 @@
-﻿namespace StockShareRequester.OptionModels
+﻿namespace Client.OptionModels
 {
     public class StockTraderBroker
     {

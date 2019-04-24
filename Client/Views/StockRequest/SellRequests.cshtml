@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Client.Models.SellRequestModel>
+
+@{
+    ViewData["Title"] = "SellRequests";
+}
+
+<h1>SellRequests</h1>
+
+@{
+    if (ViewBag.ShowErrorDialog != null && ViewBag.ShowErrorDialog == true)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.ErrorText
+        </div>
+    }
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StockId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeOut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AmountOfShares)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StockId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeOut)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AmountOfShares)
+                </td>
+                <td>
+                    @Html.ActionLink("Retract request", "RemoveSellRequest", new {  requestId=item.Id  })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
