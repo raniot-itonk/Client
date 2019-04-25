@@ -40,7 +40,7 @@ namespace Client.Controllers
             try
             {
                 var allStocks = await _publicShareOwnerControlClient.GetAllStocks();
-                return View(allStocks);
+                return View("StockList" ,allStocks);
             }
             catch (FlurlHttpException e)
             {
@@ -58,7 +58,7 @@ namespace Client.Controllers
                 var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
                 var allOwnedStocks = await _publicShareOwnerControlClient.GetAllOwnedStocks(id, jwtToken);
                 var ownedStockViewModels = OwnedStockViewModel.FromStockResponseList(allOwnedStocks, id);
-                return View(ownedStockViewModels);
+                return View("OwnedStockList" ,ownedStockViewModels);
             }
             catch (FlurlHttpException e)
             {
@@ -93,7 +93,7 @@ namespace Client.Controllers
             };
             var (jwtToken, _) = JwtHelper.GetJwtAndIdFromJwt(Request);
             var validationResult = await _stockShareRequesterClient.PlaceBid(placeBidRequest, jwtToken);
-            if (validationResult.Valid) return await Index();
+            if (validationResult.Valid) return await StockList();
             ViewBag.ShowErrorDialog = true;
             ViewBag.ErrorText = validationResult.ErrorMessage;
             return View(createStockViewModel);
@@ -125,7 +125,7 @@ namespace Client.Controllers
             };
             var validationResult = await _stockShareProviderClient.SetSharesForSale(sellRequestRequest, jwtToken);
 
-            if(validationResult.Valid) return await Index();
+            if(validationResult.Valid) return await OwnedStockList();
             ViewBag.ShowErrorDialog = true;
             ViewBag.ErrorText = validationResult.ErrorMessage;
             return View(sellStockViewModel);

@@ -15,7 +15,7 @@ namespace Client.Controllers
         public IActionResult Privacy()
         {
             throw new Exception("This is a dummy Exception to FromStockResponseList exception handling!");
-            return View();
+            //return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
