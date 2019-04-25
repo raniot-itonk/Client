@@ -21,6 +21,13 @@ namespace Client.Clients
                            throw new ArgumentNullException(nameof(serviceOption.CurrentValue.PublicShareOwnerControl));
         }
 
+        public async Task<StockResponse> GetStock(long id, string jwtToken)
+        {
+            return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
+                _publicShareOwnerControl.BaseAddress.AppendPathSegments(_publicShareOwnerControl.PublicSharePath.Stock, id)
+                    .WithOAuthBearerToken(jwtToken).GetJsonAsync<StockResponse>());
+        }
+
         public async Task<List<StockResponse>> GetAllStocks()
         {
             return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>

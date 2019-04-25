@@ -13,5 +13,6 @@ namespace Client.Clients
         Task<List<StockWithOwnerInfoResponse>> GetStockWithOwnerInfo(Guid id, string jwtToken);
         Task IssueShares(IssueSharesRequest issueSharesRequest, long id, string jwtToken);
         Task<StockResponse> PostStock(StockRequest stockRequest, string jwtToken);
+        Task<StockResponse> GetStock(long id, string jwtToken);
     }
 }

@@ -57,7 +57,7 @@
                         @Html.DisplayFor(modelItem => item.LastTradedValue)
                     </td>
                     <td>
-                        @Html.ActionLink("Retract request", "RemoveSellRequest", new { requestId = item.Id })
+                        @Html.ActionLink("Retract request", "RemoveBuyRequest", new { requestId = item.Id })
                     </td>
                 </tr>
             }
