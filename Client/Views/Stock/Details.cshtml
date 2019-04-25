@@ -1,0 +1,63 @@
+﻿@model Client.Controllers.DetailsBuySharesViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<p>
+    <a asp-action="Buy">Create Buy Request</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().AccountId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().StockId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().TimeOut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().AmountOfShares)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.SellRequestModels) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccountId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StockId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeOut)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AmountOfShares)
+            </td>
+            <td>
+                @Html.ActionLink("Create Matching Buy Request", "Buy", new { id=item.StockId, amountOfShares=item.AmountOfShares, price=item.Price, timeOut=item.TimeOut }) |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

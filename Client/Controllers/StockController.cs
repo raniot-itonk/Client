@@ -22,16 +22,19 @@ namespace Client.Controllers
         private readonly IPublicShareOwnerControlClient _publicShareOwnerControlClient;
         private readonly IStockShareRequesterClient _stockShareRequesterClient;
         private readonly IStockShareProviderClient _stockShareProviderClient;
+        private readonly IStockTraderBrokerClient _stockTraderBrokerClient;
         private readonly ILogger<StockController> _logger;
 
         public StockController(IBankClient bankClient, IPublicShareOwnerControlClient publicShareOwnerControlClient,
             IStockShareRequesterClient stockShareRequesterClient, IStockShareProviderClient stockShareProviderClient,
+            IStockTraderBrokerClient stockTraderBrokerClient,
             ILogger<StockController> logger)
         {
             _bankClient = bankClient;
             _publicShareOwnerControlClient = publicShareOwnerControlClient;
             _stockShareRequesterClient = stockShareRequesterClient;
             _stockShareProviderClient = stockShareProviderClient;
+            _stockTraderBrokerClient = stockTraderBrokerClient;
             _logger = logger;
         }
 
@@ -77,6 +80,18 @@ namespace Client.Controllers
                 AmountOfShares = 0,
                 TimeOut = DateTime.Today.AddDays(1),
                 Price = 0
+            };
+            return View(buyStockViewModel);
+        }
+
+        public IActionResult Buy(long id, int amountOfShares, double price, DateTime timeOut)
+        {
+            var buyStockViewModel = new BuyStockViewModel
+            {
+                Id = id,
+                AmountOfShares = amountOfShares,
+                TimeOut = timeOut,
+                Price = price
             };
             return View(buyStockViewModel);
         }
@@ -130,6 +145,20 @@ namespace Client.Controllers
             ViewBag.ErrorText = validationResult.ErrorMessage;
             return View(sellStockViewModel);
         }
+
+        public async Task<IActionResult> Details(long id, string name)
+        {
+            var (jwtToken, _) = JwtHelper.GetJwtAndIdFromJwt(Request);
+            var sellRequestsForSpecificStock = await _stockTraderBrokerClient.GetSellRequestsForSpecificStock(id, jwtToken);
+            var detailsBuySharesViewModel = new DetailsBuySharesViewModel { Name = name, SellRequestModels = sellRequestsForSpecificStock };
+            return View(detailsBuySharesViewModel);
+        }
+    }
+
+    public class DetailsBuySharesViewModel
+    {
+        public IEnumerable<SellRequestModel> SellRequestModels { get; set; }
+        public string Name { get; set; }
     }
 
     public class OwnedStockViewModel
