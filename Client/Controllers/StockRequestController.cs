@@ -78,7 +78,7 @@ namespace Client.Controllers
                     Name = stock.Name
                 });
             }
-            return View("SellRequests", buyRequestViewModels);
+            return View("BuyRequests", buyRequestViewModels);
         }
 
         public async Task<ViewResult> RemoveBuyRequest(long requestId)
