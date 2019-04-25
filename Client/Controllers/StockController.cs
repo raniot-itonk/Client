@@ -93,7 +93,7 @@ namespace Client.Controllers
                 TimeOut = timeOut,
                 Price = price
             };
-            _logger.LogInformation("Sending BuyStockViewModel @{buyStockViewModel} to Buy", buyStockViewModel);
+            _logger.LogInformation("Sending BuyStockViewModel {@buyStockViewModel} to Buy", buyStockViewModel);
             return View("Buy" ,buyStockViewModel);
         }
 
