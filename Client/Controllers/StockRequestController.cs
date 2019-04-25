@@ -52,7 +52,7 @@ namespace Client.Controllers
         public async Task<ViewResult> RemoveSellRequest(long requestId)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
-            var validationResult = await _stockShareRequesterClient.RemoveBid(requestId, jwtToken);
+            var validationResult = await _stockShareProviderClient.RemoveSharesForSale(requestId, jwtToken);
             if (validationResult.Valid) return await SellRequests();
 
             ViewBag.ShowErrorDialog = true;
@@ -84,7 +84,7 @@ namespace Client.Controllers
         public async Task<ViewResult> RemoveBuyRequest(long requestId)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
-            var validationResult = await _stockShareProviderClient.RemoveSharesForSale(requestId, jwtToken);
+            var validationResult = await _stockShareRequesterClient.RemoveBid(requestId, jwtToken);
             if (validationResult.Valid) return await SellRequests();
 
             ViewBag.ShowErrorDialog = true;
