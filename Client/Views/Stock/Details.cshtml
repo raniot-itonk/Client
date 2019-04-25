@@ -55,7 +55,7 @@
                 @Html.DisplayFor(modelItem => item.AmountOfShares)
             </td>
             <td>
-                @Html.ActionLink("Create Matching Buy Request", "BuyWithInput", new { id=item.StockId, amountOfShares=item.AmountOfShares, price=item.Price, timeOut=item.TimeOut })
+                @Html.ActionLink("Create Matching Buy Request", "BuyWithInput", new { id=item.StockId, amountOfShares=item.AmountOfShares, price=item.Price, timeOutTicks=item.TimeOut.Ticks })
             </td>
         </tr>
 }
