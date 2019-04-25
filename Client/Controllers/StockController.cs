@@ -35,33 +35,6 @@ namespace Client.Controllers
             _logger = logger;
         }
 
-        public async Task<ViewResult> Index()
-        {
-            try
-            {
-
-                var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
-
-                var getAccountRequest = new GetAccountRequest { Id = id };
-                var account = await _bankClient.GetAccount(getAccountRequest, jwtToken);
-
-                return View("Index", account);
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e, "Redirected person to login screen");
-                return View("_LoginPartial");
-            }
-        }
-
-        public async Task<ViewResult> AddBalance()
-        {
-            var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
-            var depositRequest = new DepositRequest{Amount = 1000};
-            await _bankClient.Deposit(depositRequest, id, jwtToken);
-            return await Index();
-        }
-
         public async Task<ViewResult> StockList()
         {
             try
