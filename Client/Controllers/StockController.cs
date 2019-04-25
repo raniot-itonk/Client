@@ -84,7 +84,7 @@ namespace Client.Controllers
             return View(buyStockViewModel);
         }
 
-        public IActionResult Buy(long id, int amountOfShares, double price, DateTime timeOut)
+        public IActionResult BuyWithInput(long id, int amountOfShares, double price, DateTime timeOut)
         {
             var buyStockViewModel = new BuyStockViewModel
             {
@@ -93,7 +93,7 @@ namespace Client.Controllers
                 TimeOut = timeOut,
                 Price = price
             };
-            return View(buyStockViewModel);
+            return View("Buy" ,buyStockViewModel);
         }
 
         [HttpPost]
