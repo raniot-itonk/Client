@@ -13,13 +13,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().AccountId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().StockId)
+                @Html.DisplayName("Stock")
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SellRequestModels.FirstOrDefault().Price)
@@ -37,13 +31,7 @@
 @foreach (var item in Model.SellRequestModels) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StockId)
+                @Html.DisplayName(@Model.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
