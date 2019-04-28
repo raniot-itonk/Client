@@ -84,11 +84,11 @@ namespace Client.Controllers
             return View(buyStockViewModel);
         }
 
-        public IActionResult BuyWithInput(long id, int amountOfShares, double price, long timeOutTicks)
+        public IActionResult BuyWithInput(long stockId, int amountOfShares, double price, long timeOutTicks)
         {
             var buyStockViewModel = new BuyStockViewModel
             {
-                Id = id,
+                Id = stockId,
                 AmountOfShares = amountOfShares,
                 TimeOut = new DateTime(timeOutTicks),
                 Price = price
