@@ -85,11 +85,11 @@ namespace Client.Controllers
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
             var validationResult = await _stockShareRequesterClient.RemoveBid(requestId, jwtToken);
-            if (validationResult.Valid) return await SellRequests();
+            if (validationResult.Valid) return await BuyRequests();
 
             ViewBag.ShowErrorDialog = true;
             ViewBag.ErrorText = validationResult.ErrorMessage;
-            return await SellRequests();
+            return await BuyRequests();
         }
     }
 }
