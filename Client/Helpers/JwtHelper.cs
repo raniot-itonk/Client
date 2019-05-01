@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using Client.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace Client.Helpers
@@ -12,6 +13,15 @@ namespace Client.Helpers
             Console.WriteLine("My JwtToken : " + jwtToken);
             var id = GetIdFromToken(jwtToken);
             return (jwtToken, id);
+        }
+
+        public static LoginViewModel LoggedIn(HttpRequest request)
+        {
+            var loginViewModel = new LoginViewModel();
+            var tryGetValue = request.Cookies.TryGetValue("jwtCookie", out var jwtToken);
+            loginViewModel.LoggedIn = tryGetValue;
+
+            return loginViewModel;
         }
 
         public static Guid GetIdFromToken(string jwtToken)

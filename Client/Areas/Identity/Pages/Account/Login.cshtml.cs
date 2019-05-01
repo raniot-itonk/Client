@@ -92,7 +92,7 @@ namespace Client.Areas.Identity.Pages.Account
 
                 await HttpContext.SignInAsync(principal);
 
-                Response.Cookies.Append("jwtCookie", response.AccessToken, new CookieOptions { HttpOnly = true });
+                Response.Cookies.Append("jwtCookie", response.AccessToken, new CookieOptions { HttpOnly = true, MaxAge = TimeSpan.FromHours(1), Expires = DateTimeOffset.Now.AddHours(1)});
 
                 return LocalRedirect("~/");
             }
