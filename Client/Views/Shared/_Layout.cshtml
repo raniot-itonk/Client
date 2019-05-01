@@ -33,12 +33,13 @@
                         var LoggedIn = JwtHelper.LoggedIn(HttpContextAccessor.HttpContext.Request);
                     }
 
-
                     <partial name="_LoginPartial" model=@LoggedIn/>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        
+                        @if(LoggedIn.LoggedIn){
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Balance" asp-action="Index">Balance</a>
                         </li>
@@ -57,6 +58,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="List">Business</a>
                         </li>
+                        }
                     </ul>
                 </div>
             </div>
