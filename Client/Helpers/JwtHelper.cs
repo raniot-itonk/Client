@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using Client.Models;
 using Microsoft.AspNetCore.Http;
 
@@ -21,7 +22,45 @@ namespace Client.Helpers
             var tryGetValue = request.Cookies.TryGetValue("jwtCookie", out var jwtToken);
             loginViewModel.LoggedIn = tryGetValue;
 
+            if (tryGetValue)
+            {
+                loginViewModel.IsStockProvider = GetIsStockProviderFromToken(jwtToken);
+                loginViewModel.FirstName = GetFirstNameFromToken(jwtToken);
+            }
+
             return loginViewModel;
+        }
+
+        private static string GetFirstNameFromToken(string jwtToken)
+        {
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(jwtToken);
+                var firstNameFromJwt = jwtSecurityToken.Claims.FirstOrDefault(x => x.Type.Equals("First Name"))?.Value;
+                return firstNameFromJwt;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static bool GetIsStockProviderFromToken(string jwtToken)
+        {
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(jwtToken);
+                var stockProviderFromJwt = bool.Parse(jwtSecurityToken.Claims.FirstOrDefault(x => x.Type.Equals("StockProvider"))?.Value);
+                return stockProviderFromJwt;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public static Guid GetIdFromToken(string jwtToken)

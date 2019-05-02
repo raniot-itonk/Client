@@ -4,7 +4,7 @@
     @if (Model.LoggedIn)
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Login" asp-action="LogOut" title="Manage">Hello</a>
+            <a class="nav-link text-dark" asp-controller="Login" asp-action="LogOut" title="Manage">Hello @Model.FirstName</a>
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-controller="Login" asp-action="LogOut" title="Manage">
