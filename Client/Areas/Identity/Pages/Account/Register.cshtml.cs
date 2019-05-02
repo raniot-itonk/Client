@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
 namespace Client.Areas.Identity.Pages.Account
@@ -63,6 +65,10 @@ namespace Client.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "Stock Provider")]
+            public string IsStockProvider { get; set; }
         }
 
         public void OnGet(string returnUrl = null)
@@ -79,7 +85,8 @@ namespace Client.Areas.Identity.Pages.Account
                 Email = Input.Email,
                 FirstName = Input.FirstName,
                 LastName = Input.LastName,
-                Password = Input.Password
+                Password = Input.Password,
+                IsStockProvider = Input.IsStockProvider.Equals("StockProvider")
             };
 
             try

@@ -19,5 +19,8 @@ namespace Client.Models.Requests.AuthorizationService
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
+        public bool IsStockProvider { get; set; }
     }
 }
