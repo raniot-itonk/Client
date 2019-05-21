@@ -9,9 +9,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Event)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.EventMessage)
             </th>
@@ -24,9 +24,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.Event)
-            </td>
+            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.EventMessage)
             </td>

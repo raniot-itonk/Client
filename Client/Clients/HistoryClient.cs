@@ -25,7 +25,7 @@ namespace Client.Clients
         public async Task<List<HistoryResponse>> GetHistory(Guid id, string jwtToken)
         {
             return await PolicyHelper.ThreeRetriesAsync().ExecuteAsync(() =>
-                _historyService.BaseAddress.AppendPathSegments(_historyService.HistoryPath.History, id)
+                _historyService.BaseAddress.AppendPathSegment(_historyService.HistoryPath.History).SetQueryParam("user", id)
                     .WithOAuthBearerToken(jwtToken).GetJsonAsync<List<HistoryResponse>>());
         }
     }
