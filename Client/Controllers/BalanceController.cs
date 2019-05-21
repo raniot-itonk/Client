@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Client.Clients;
 using Client.Helpers;
-using Client.Models;
 using Client.Models.Requests.BankService;
-using Client.Models.Requests.StockShareProvider;
-using Client.Models.Requests.StockShareRequester;
-using Client.Models.Responses.PublicShareOwnerControl;
-using Flurl.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -37,21 +29,12 @@ namespace Client.Controllers
 
         public async Task<ViewResult> Index()
         {
-            try
-            {
+            var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
 
-                var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
+            var getAccountRequest = new GetAccountRequest { Id = id };
+            var account = await _bankClient.GetAccount(getAccountRequest, jwtToken);
 
-                var getAccountRequest = new GetAccountRequest { Id = id };
-                var account = await _bankClient.GetAccount(getAccountRequest, jwtToken);
-
-                return View("Index", account);
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e, "Redirected person to login screen");
-                return View("_LoginPartial");
-            }
+            return View("Index", account);
         }
 
         public async Task<ViewResult> AddBalance()

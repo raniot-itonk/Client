@@ -25,9 +25,9 @@ namespace Client.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly ILogger<LoginModel> _logger;
-        private readonly AuthorizationClient _authorizationClient;
+        private readonly IAuthorizationClient _authorizationClient;
 
-        public LoginModel(ILogger<LoginModel> logger, AuthorizationClient client)
+        public LoginModel(ILogger<LoginModel> logger, IAuthorizationClient client)
         {
             _logger = logger;
             _authorizationClient = client ?? throw new ArgumentNullException(nameof(client));

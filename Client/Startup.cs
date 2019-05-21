@@ -38,12 +38,13 @@ namespace Client
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.Configure<Services>(Configuration.GetSection(nameof(Services)));
-            services.AddTransient<AuthorizationClient>();
+            services.AddTransient<IAuthorizationClient, AuthorizationClient>();
             services.AddScoped<IBankClient, BankClient>();
             services.AddScoped<IStockShareRequesterClient, StockShareRequesterClient>();
             services.AddScoped<IStockShareProviderClient, StockShareProviderClient>();
             services.AddScoped<IPublicShareOwnerControlClient, PublicShareOwnerControlClient>();
             services.AddScoped<IStockTraderBrokerClient, StockTraderBrokerClient>();
+            services.AddScoped<IHistoryClient, HistoryClient>();
 
             services.AddHealthChecks();
         }

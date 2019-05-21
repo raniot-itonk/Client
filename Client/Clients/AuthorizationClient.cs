@@ -11,7 +11,13 @@ using Microsoft.Extensions.Options;
 
 namespace Client.Clients
 {
-    public class AuthorizationClient
+    public interface IAuthorizationClient
+    {
+        Task<TokenResponse> Register(RegisterRequest request);
+        Task<TokenResponse> Login(LoginRequest request);
+    }
+
+    public class AuthorizationClient : IAuthorizationClient
     {
         private readonly IBankClient _bankClient;
         private readonly AuthorizationService _authorizationService;

@@ -24,10 +24,10 @@ namespace Client.Areas.Identity.Pages.Account
     {
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly AuthorizationClient _authorizationClient;
+        private readonly IAuthorizationClient _authorizationClient;
         private readonly IBankClient _bankClient;
 
-        public RegisterModel(ILogger<RegisterModel> logger, IEmailSender emailSender, AuthorizationClient client, IBankClient bankClient)
+        public RegisterModel(ILogger<RegisterModel> logger, IEmailSender emailSender, IAuthorizationClient client, IBankClient bankClient)
         {
             _logger = logger;
             _emailSender = emailSender;

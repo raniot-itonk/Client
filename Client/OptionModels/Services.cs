@@ -8,5 +8,6 @@
         public StockShareRequester StockShareRequester { get; set; }
         public StockShareProvider StockShareProvider { get; set; }
         public StockTraderBroker StockTraderBroker { get; set; }
+        public HistoryService HistoryService { get; set; }
     }
 }

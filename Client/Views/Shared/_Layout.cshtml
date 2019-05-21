@@ -55,6 +55,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="StockRequest" asp-action="BuyRequests">Current Buy Requests</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="History" asp-action="Index">History</a>
+                        </li>
                         }
                         @if (LoggedIn.LoggedIn && LoggedIn.IsStockProvider){
                         <li class="nav-item">
