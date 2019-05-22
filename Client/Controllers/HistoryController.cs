@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Client.Clients;
 using Client.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -16,6 +17,8 @@ namespace Client.Controllers
             _logger = logger;
             _historyClient = historyClient;
         }
+
+        [Authorize("client.UserActions")]
         public async Task<IActionResult> Index()
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);

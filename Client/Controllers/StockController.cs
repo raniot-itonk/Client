@@ -11,6 +11,7 @@ using Client.Models.Requests.StockShareProvider;
 using Client.Models.Requests.StockShareRequester;
 using Client.Models.Responses.PublicShareOwnerControl;
 using Flurl.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -38,6 +39,7 @@ namespace Client.Controllers
             _logger = logger;
         }
 
+        [Authorize("client.UserActions")]
         public async Task<ViewResult> StockList()
         {
             try
@@ -54,6 +56,7 @@ namespace Client.Controllers
             }
         }
 
+        [Authorize("client.UserActions")]
         public async Task<ViewResult> OwnedStockList()
         {
             try
@@ -72,6 +75,7 @@ namespace Client.Controllers
             }
         }
 
+        [Authorize("client.UserActions")]
         public IActionResult Buy(long id)
         {
             var buyStockViewModel = new BuyStockViewModel
@@ -84,6 +88,7 @@ namespace Client.Controllers
             return View(buyStockViewModel);
         }
 
+        [Authorize("client.UserActions")]
         public IActionResult BuyWithInput(long stockId, int amountOfShares, double price, long timeOutTicks)
         {
             var buyStockViewModel = new BuyStockViewModel
@@ -98,6 +103,7 @@ namespace Client.Controllers
         }
 
         [HttpPost]
+        [Authorize("client.UserActions")]
         public async Task<IActionResult> Buy([Bind("Id,TimeOut,AmountOfShares,Price")] BuyStockViewModel createStockViewModel)
         {
             var placeBidRequest = new PlaceBidRequest
@@ -115,6 +121,7 @@ namespace Client.Controllers
             return View(createStockViewModel);
         }
 
+        [Authorize("client.UserActions")]
         public IActionResult Sell(long id)
         {
             var sellStockViewModel = new SellStockViewModel
@@ -128,6 +135,7 @@ namespace Client.Controllers
         }
 
         [HttpPost]
+        [Authorize("client.UserActions")]
         public async Task<IActionResult> Sell([Bind("Id,TimeOut,AmountOfShares,Price")] SellStockViewModel sellStockViewModel)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
@@ -147,6 +155,7 @@ namespace Client.Controllers
             return View(sellStockViewModel);
         }
 
+        [Authorize("client.UserActions")]
         public async Task<IActionResult> Details(long id, string name)
         {
             var (jwtToken, _) = JwtHelper.GetJwtAndIdFromJwt(Request);

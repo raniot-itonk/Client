@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Client.Clients;
 using Client.Helpers;
 using Client.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -28,6 +29,8 @@ namespace Client.Controllers
 
             _logger = logger;
         }
+
+        [Authorize("client.UserActions")]
         public async Task<ViewResult> SellRequests()
         {
             var sellRequestViewModels = new List<GenericRequestViewModel>();
@@ -49,6 +52,7 @@ namespace Client.Controllers
             return View("SellRequests", sellRequestViewModels);
         }
 
+        [Authorize("client.UserActions")]
         public async Task<ViewResult> RemoveSellRequest(long requestId)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
@@ -60,6 +64,7 @@ namespace Client.Controllers
             return await SellRequests();
         }
 
+        [Authorize("client.UserActions")]
         public async Task<ViewResult> BuyRequests()
         {
             var buyRequestViewModels = new List<GenericRequestViewModel>();
@@ -81,6 +86,7 @@ namespace Client.Controllers
             return View("BuyRequests", buyRequestViewModels);
         }
 
+        [Authorize("client.UserActions")]
         public async Task<ViewResult> RemoveBuyRequest(long requestId)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);

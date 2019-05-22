@@ -49,7 +49,7 @@ namespace Client.Clients
                 ClientId = "client.user",
                 ClientSecret = "secret",
                 GrantType = OidcConstants.GrantTypes.Password,
-                Scope = "BankingService.UserActions openid profile",
+                Scope = "client.UserActions openid profile",
 
                 UserName = request.Email,
                 Password = request.Password,

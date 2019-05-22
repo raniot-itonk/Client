@@ -7,6 +7,8 @@ using Client.Models;
 using Client.Models.Requests.PublicShareOwnerControl;
 using Client.Models.Requests.StockShareProvider;
 using Client.Models.Responses.PublicShareOwnerControl;
+using IdentityModel.Client;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -27,6 +29,7 @@ namespace Client.Controllers
             _logger = logger;
         }
 
+        [Authorize("client.BusinessActions")]
         public async Task<IActionResult> List()
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
@@ -34,7 +37,7 @@ namespace Client.Controllers
             return View("List", stocksWithOwnerInfo);
         }
 
-
+        [Authorize("client.BusinessActions")]
         public IActionResult Create()
         {
             var createStockViewModel = new CreateStockViewModel
@@ -45,7 +48,9 @@ namespace Client.Controllers
             };
             return View(createStockViewModel);
         }
+
         [HttpPost]
+        [Authorize("client.BusinessActions")]
         public async Task<IActionResult> Create([Bind("Name,Price,TimeOut,AmountOfShares")] CreateStockViewModel createStockViewModel)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
@@ -82,6 +87,7 @@ namespace Client.Controllers
             return View(createStockViewModel);
         }
 
+        [Authorize("client.BusinessActions")]
         public IActionResult IssueMore(long id)
         {
             var issueMoreViewModel = new IssueMoreViewModel
@@ -96,6 +102,7 @@ namespace Client.Controllers
         }
 
         [HttpPost]
+        [Authorize("client.BusinessActions")]
         public async Task<IActionResult> IssueMore([Bind("Id,Price,TimeOut,Amount")] IssueMoreViewModel issueMoreViewModel)
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
