@@ -1,5 +1,9 @@
-﻿using Client.Clients;
+﻿using Client.Authorization;
+using Client.Clients;
+using Client.Middleware;
 using Client.OptionModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 
 namespace Client
 {
@@ -46,6 +51,11 @@ namespace Client
             services.AddScoped<IStockTraderBrokerClient, StockTraderBrokerClient>();
             services.AddScoped<IHistoryClient, HistoryClient>();
 
+
+            var authorizationService = services.BuildServiceProvider().GetService<IOptionsMonitor<Services>>()
+                .CurrentValue.AuthorizationService;
+            AddAuthenticationAndAuthorization(services, authorizationService);
+
             services.AddHealthChecks();
         }
 
@@ -64,13 +74,15 @@ namespace Client
                 app.UseHsts();
                 app.ExceptionMiddleware();
             }
-
+            
+            app.JwtMiddleware();
             SetupReadyAndLiveHealthChecks(app);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -91,6 +103,28 @@ namespace Client
                 // Exclude all checks and return a 200-Ok.
                 Predicate = (_) => false
             });
+        }
+
+        private void AddAuthenticationAndAuthorization(IServiceCollection services,
+            AuthorizationService authorizationService)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = authorizationService.BaseAddress;
+                    options.Audience = "Client";
+                    options.SaveToken = true;
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("client.UserActions", policy =>
+                    policy.Requirements.Add(new UserHasRequirement("client.UserActions", authorizationService.BaseAddress)));
+                options.AddPolicy("client.BusinessActions", policy =>
+                    policy.Requirements.Add(new UserHasRequirement("client.BusinessActions", authorizationService.BaseAddress, "StockProvider")));
+            });
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+
         }
     }
 }

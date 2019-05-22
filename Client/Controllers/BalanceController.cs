@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Client.Clients;
 using Client.Helpers;
 using Client.Models.Requests.BankService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -27,6 +28,7 @@ namespace Client.Controllers
             _logger = logger;
         }
 
+        [Authorize("client.UserActions")]
         public async Task<ViewResult> Index()
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
@@ -37,6 +39,7 @@ namespace Client.Controllers
             return View("Index", account);
         }
 
+        [Authorize("client.UserActions")]
         public async Task<ViewResult> AddBalance()
         {
             var (jwtToken, id) = JwtHelper.GetJwtAndIdFromJwt(Request);
