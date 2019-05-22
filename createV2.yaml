@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: clientv2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: clientv2
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: clientv2
+        image: raniotitonk/client:v2
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Test"
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 80
+          periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 80
+          periodSeconds: 60
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clientv2
+spec:
+  selector:
+    app: clientv2
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
